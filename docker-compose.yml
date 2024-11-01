@@ -1,0 +1,8 @@
+services:
+  server:
+    build:
+      context: .
+    container_name: server
+    image: infinite-craft-server
+    ports:
+      - 8000:8000
