@@ -2,14 +2,17 @@ import time
 from contextlib import asynccontextmanager
 
 import uvicorn
+from fastapi import Depends
 from fastapi import FastAPI
 from fastapi import Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from sqlalchemy.orm import Session
 
 import config
 import init
 from crud import get_result
+from dependencies import get_db
 
 
 @asynccontextmanager
@@ -30,7 +33,10 @@ app.add_middleware(
 # noinspection PyTypeChecker
 app.add_middleware(GZipMiddleware)
 
-app.get("/pair")(get_result)
+
+@app.get("/pair")
+def pair(first: str, second: str, db: Session = Depends(get_db)):
+    return get_result((first, second), db)
 
 
 @app.middleware("http")

@@ -39,6 +39,12 @@ RUN head -1 data/element/0.csv > data/element.csv && \
 RUN head -1 data/pair/0.csv > data/pair.csv && \
     tail -n +2 -q data/pair/*.csv >> data/pair.csv && \
     sqlite3 database.sqlite ".mode csv" ".import data/pair.csv pair"
+RUN sqlite3 database.sqlite " \
+    DELETE \
+    FROM pair \
+    WHERE result_id = (SELECT id FROM element WHERE text = 'Nothing'); \
+    VACUUM; \
+    "
 
 FROM prod
 
